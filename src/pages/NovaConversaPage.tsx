@@ -21,16 +21,18 @@ export function NovaConversaPage() {
   const assistenteIdParam = searchParams.get('assistente');
   
   const { error } = useToastContext();
-  
-  const [selectedAssistente, setSelectedAssistente] = useState<string>(assistenteIdParam || '');
-  const [titulo, setTitulo] = useState('');
 
   const { data: assistentes, isLoading } = useQuery({
     queryKey: ['assistentes'],
     queryFn: assistenteService.listar,
   });
 
-  const activeAssistentes = assistentes?.filter(a => a.status === 'ATIVO') || [];
+  const activeAssistentes = assistentes?.filter((a) => a.status === 'ATIVO') || [];
+  const defaultAssistenteId = activeAssistentes.length > 0 ? String(activeAssistentes[0].id) : '';
+  const defaultTitulo = 'Nova conversa padrão';
+
+  const [selectedAssistente, setSelectedAssistente] = useState<string>(assistenteIdParam || defaultAssistenteId);
+  const [titulo, setTitulo] = useState(defaultTitulo);
 
   const createMutation = useMutation({
     mutationFn: conversaService.iniciar,

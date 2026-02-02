@@ -1,6 +1,5 @@
 import { API_ENDPOINTS } from '@/config/api';
 import type { Configuracao, ConfiguracaoFormData } from '@/types';
-import { TipoConfiguracao } from '@/types';
 
 class ApiError extends Error {
   status: number;
@@ -48,7 +47,7 @@ export const configuracaoService = {
   // ================================
   // # obterPorTipo - Obtém configuração por tipo
   // ================================
-  async obterPorTipo(tipo: TipoConfiguracao): Promise<Configuracao | null> {
+  async obterPorTipo(tipo: string): Promise<Configuracao | null> {
     const response = await fetch(`${API_ENDPOINTS.configuracoes}/tipo/${tipo}`);
     if (response.status === 404) {
       return null;
@@ -79,7 +78,7 @@ export const configuracaoService = {
     const existentes = await this.listar();
 
     // Mapeamento tipo -> configuração existente
-    const mapaExistentes = new Map<TipoConfiguracao, Configuracao>();
+    const mapaExistentes = new Map<string, Configuracao>();
     existentes.forEach(config => {
       mapaExistentes.set(config.tipoConfiguracao, config);
     });
@@ -170,29 +169,37 @@ export const configuracaoService = {
   // ================================
   // # Helper: Mapeia chave do form para TipoConfiguracao
   // ================================
-  mapFormKeyToTipoConfiguracao(key: string): TipoConfiguracao | null {
-    const mapping: Record<string, TipoConfiguracao> = {
-      openrouterApiKey: TipoConfiguracao.OPENROUTER_API_KEY,
-      embeddingModel: TipoConfiguracao.EMBEDDING_MODEL,
-      embeddingDimension: TipoConfiguracao.EMBEDDING_DIMENSION,
-      llmModelPadrao: TipoConfiguracao.LLM_MODEL_PADRAO,
-      maxTokensPerRequest: TipoConfiguracao.MAX_TOKENS_PER_REQUEST,
-      maxFileSizeMb: TipoConfiguracao.MAX_FILE_SIZE_MB,
-      maxChunkSize: TipoConfiguracao.MAX_CHUNK_SIZE,
-      temperature: TipoConfiguracao.TEMPERATURE,
-      topP: TipoConfiguracao.TOP_P,
-      topK: TipoConfiguracao.TOP_K,
-      custoMaximoConversa: TipoConfiguracao.CUSTO_MAXIMO_CONVERSA,
-      custoMaximoUsuario: TipoConfiguracao.CUSTO_MAXIMO_USUARIO,
-      timeoutSegundos: TipoConfiguracao.TIMEOUT_SEGUNDOS,
-      chunkSize: TipoConfiguracao.CHUNK_SIZE,
-      chunkOverlap: TipoConfiguracao.CHUNK_OVERLAP,
-      vectorSearchLimit: TipoConfiguracao.VECTOR_SEARCH_LIMIT,
-      vectorSearchMinSimilarity: TipoConfiguracao.VECTOR_SEARCH_MIN_SIMILARITY,
-      logLevelRag: TipoConfiguracao.LOG_LEVEL_RAG,
-      debugMode: TipoConfiguracao.DEBUG_MODE,
+  mapFormKeyToTipoConfiguracao(key: string): string | null {
+    const mapping: Record<string, string> = {
+      openrouterApiKey: 'OPENROUTER_API_KEY',
+      embeddingModel: 'EMBEDDING_MODEL',
+      embeddingDimension: 'EMBEDDING_DIMENSION',
+      llmModelPadrao: 'LLM_MODEL_PADRAO',
+      maxTokensPerRequest: 'MAX_TOKENS_PER_REQUEST',
+      maxFileSizeMb: 'MAX_FILE_SIZE_MB',
+      maxChunkSize: 'MAX_CHUNK_SIZE',
+      temperature: 'TEMPERATURE',
+      topP: 'TOP_P',
+      topK: 'TOP_K',
+      custoMaximoConversa: 'CUSTO_MAXIMO_CONVERSA',
+      custoMaximoUsuario: 'CUSTO_MAXIMO_USUARIO',
+      timeoutSegundos: 'TIMEOUT_SEGUNDOS',
+      chunkSize: 'CHUNK_SIZE',
+      chunkOverlap: 'CHUNK_OVERLAP',
+      vectorSearchLimit: 'VECTOR_SEARCH_LIMIT',
+      vectorSearchMinSimilarity: 'VECTOR_SEARCH_MIN_SIMILARITY',
+      logLevelRag: 'LOG_LEVEL_RAG',
+      debugMode: 'DEBUG_MODE',
     };
 
     return mapping[key] || null;
+  },
+
+  // ================================
+  // # listarModelos - Lista os modelos disponíveis
+  // ================================
+  async listarModelos(): Promise<{ value: string; label: string }[]> {
+    const response = await fetch(API_ENDPOINTS.modelos);
+    return handleResponse<{ value: string; label: string }[]>(response);
   },
 };

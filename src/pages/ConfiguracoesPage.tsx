@@ -15,7 +15,7 @@ import { MainLayout } from '@/components/layout/MainLayout';
 import { PageLoader } from '@/components/shared/LoadingSpinner';
 import { useToastContext } from '@/hooks/useToast';
 import { configuracaoService } from '@/services/configuracaoService';
-import { TipoConfiguracao, ModeloLLM, ModeloEmbedding, NivelLog } from '@/types';
+import { ModeloLLM, ModeloEmbedding, NivelLog } from '@/types';
 import type { Configuracao, ConfiguracaoFormData } from '@/types';
 
 const configuracaoSchema = z.object({
@@ -43,18 +43,18 @@ const configuracaoSchema = z.object({
 type ConfiguracaoFormDataValidated = z.infer<typeof configuracaoSchema>;
 
 const modelosLLM = [
-  { value: ModeloLLM.MISTRAL_7B, label: 'Mistral 7B Instruct' },
-  { value: ModeloLLM.MISTRAL_8X7B, label: 'Mistral 8x7B (MoE)' },
-  { value: ModeloLLM.OPENROUTER_AUTO, label: 'Auto (Balanceamento)' },
-  { value: ModeloLLM.GPT_4_TURBO, label: 'GPT-4 Turbo' },
-  { value: ModeloLLM.CLAUDE_3_OPUS, label: 'Claude 3 Opus' },
-  { value: ModeloLLM.CLAUDE_3_SONNET, label: 'Claude 3 Sonnet' },
+  { value: ModeloLLM.MISTRAL_7B, label: 'Mistral 7B Instruct (Mistral AI)' },
+  { value: ModeloLLM.MISTRAL_8X7B, label: 'Mixtral 8x7B Instruct (Mistral AI)' },
+  { value: ModeloLLM.OPENROUTER_AUTO, label: 'Auto (Balanceamento OpenRouter)' },
+  { value: ModeloLLM.GPT_4_TURBO, label: 'GPT-4 Turbo (OpenAI)' },
+  { value: ModeloLLM.CLAUDE_3_OPUS, label: 'Claude 3 Opus (Anthropic)' },
+  { value: ModeloLLM.CLAUDE_3_SONNET, label: 'Claude 3 Sonnet (Anthropic)' },
 ];
 
 const modelosEmbedding = [
-  { value: ModeloEmbedding.TEXT_EMBEDDING_3_SMALL, label: 'Text Embedding 3 Small (1536d)' },
-  { value: ModeloEmbedding.TEXT_EMBEDDING_3_LARGE, label: 'Text Embedding 3 Large (3072d)' },
-  { value: ModeloEmbedding.TEXT_EMBEDDING_ADA_002, label: 'Text Embedding Ada 002 (1536d)' },
+  { value: ModeloEmbedding.TEXT_EMBEDDING_3_SMALL, label: 'Text Embedding 3 Small (1536d) - OpenAI' },
+  { value: ModeloEmbedding.TEXT_EMBEDDING_3_LARGE, label: 'Text Embedding 3 Large (3072d) - OpenAI' },
+  { value: ModeloEmbedding.TEXT_EMBEDDING_ADA_002, label: 'Text Embedding Ada 002 (1536d) - OpenAI' },
 ];
 
 export function ConfiguracoesPage() {
@@ -95,61 +95,61 @@ export function ConfiguracoesPage() {
       const values: Record<string, string | number | boolean> = {};
       configuracoes.forEach(config => {
         switch (config.tipoConfiguracao) {
-          case TipoConfiguracao.OPENROUTER_API_KEY:
+          case 'OPENROUTER_API_KEY':
             values.openrouterApiKey = config.ehSensivel ? '' : config.valor;
             break;
-          case TipoConfiguracao.EMBEDDING_MODEL:
+          case 'EMBEDDING_MODEL':
             values.embeddingModel = config.valor;
             break;
-          case TipoConfiguracao.EMBEDDING_DIMENSION:
+          case 'EMBEDDING_DIMENSION':
             values.embeddingDimension = parseInt(config.valor);
             break;
-          case TipoConfiguracao.LLM_MODEL_PADRAO:
+          case 'LLM_MODEL_PADRAO':
             values.llmModelPadrao = config.valor;
             break;
-          case TipoConfiguracao.MAX_TOKENS_PER_REQUEST:
+          case 'MAX_TOKENS_PER_REQUEST':
             values.maxTokensPerRequest = parseInt(config.valor);
             break;
-          case TipoConfiguracao.MAX_FILE_SIZE_MB:
+          case 'MAX_FILE_SIZE_MB':
             values.maxFileSizeMb = parseInt(config.valor);
             break;
-          case TipoConfiguracao.MAX_CHUNK_SIZE:
+          case 'MAX_CHUNK_SIZE':
             values.maxChunkSize = parseInt(config.valor);
             break;
-          case TipoConfiguracao.TEMPERATURE:
+          case 'TEMPERATURE':
             values.temperature = parseFloat(config.valor);
             break;
-          case TipoConfiguracao.TOP_P:
+          case 'TOP_P':
             values.topP = parseFloat(config.valor);
             break;
-          case TipoConfiguracao.TOP_K:
+          case 'TOP_K':
             values.topK = parseInt(config.valor);
             break;
-          case TipoConfiguracao.CUSTO_MAXIMO_CONVERSA:
+          case 'CUSTO_MAXIMO_CONVERSA':
             values.custoMaximoConversa = parseFloat(config.valor);
             break;
-          case TipoConfiguracao.CUSTO_MAXIMO_USUARIO:
+          case 'CUSTO_MAXIMO_USUARIO':
             values.custoMaximoUsuario = parseFloat(config.valor);
             break;
-          case TipoConfiguracao.TIMEOUT_SEGUNDOS:
+          case 'TIMEOUT_SEGUNDOS':
             values.timeoutSegundos = parseInt(config.valor);
             break;
-          case TipoConfiguracao.CHUNK_SIZE:
+          case 'CHUNK_SIZE':
             values.chunkSize = parseInt(config.valor);
             break;
-          case TipoConfiguracao.CHUNK_OVERLAP:
+          case 'CHUNK_OVERLAP':
             values.chunkOverlap = parseInt(config.valor);
             break;
-          case TipoConfiguracao.VECTOR_SEARCH_LIMIT:
+          case 'VECTOR_SEARCH_LIMIT':
             values.vectorSearchLimit = parseInt(config.valor);
             break;
-          case TipoConfiguracao.VECTOR_SEARCH_MIN_SIMILARITY:
+          case 'VECTOR_SEARCH_MIN_SIMILARITY':
             values.vectorSearchMinSimilarity = parseFloat(config.valor);
             break;
-          case TipoConfiguracao.LOG_LEVEL_RAG:
+          case 'LOG_LEVEL_RAG':
             values.logLevelRag = config.valor;
             break;
-          case TipoConfiguracao.DEBUG_MODE:
+          case 'DEBUG_MODE':
             values.debugMode = config.valor === 'true';
             break;
         }

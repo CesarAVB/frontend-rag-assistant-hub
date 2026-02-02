@@ -23,6 +23,7 @@ export const API_ENDPOINTS = {
   
   // Configurações
   configuracoes: `${API_BASE_URL}/configuracoes`,
+  modelos: `${API_BASE_URL}/configuracoes/modelos`,
 };
 
 // Default user ID (temporary - replace with auth)

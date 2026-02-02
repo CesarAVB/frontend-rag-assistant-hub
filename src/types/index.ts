@@ -111,18 +111,18 @@ export enum NivelLog {
 }
 
 export enum ModeloLLM {
-  MISTRAL_7B = 'mistral-7b-instruct',
-  MISTRAL_8X7B = 'mistral-8x7b-instruct',
+  MISTRAL_7B = 'mistralai/mistral-7b-instruct',
+  MISTRAL_8X7B = 'mistralai/mixtral-8x7b-instruct',
   OPENROUTER_AUTO = 'openrouter/auto',
-  GPT_4_TURBO = 'gpt-4-turbo',
-  CLAUDE_3_OPUS = 'claude-3-opus',
-  CLAUDE_3_SONNET = 'claude-3-sonnet',
+  GPT_4_TURBO = 'openai/gpt-4-turbo',
+  CLAUDE_3_OPUS = 'anthropic/claude-3-opus',
+  CLAUDE_3_SONNET = 'anthropic/claude-3-sonnet',
 }
 
 export enum ModeloEmbedding {
-  TEXT_EMBEDDING_3_SMALL = 'text-embedding-3-small',
-  TEXT_EMBEDDING_3_LARGE = 'text-embedding-3-large',
-  TEXT_EMBEDDING_ADA_002 = 'text-embedding-ada-002',
+  TEXT_EMBEDDING_3_SMALL = 'openai/text-embedding-3-small',
+  TEXT_EMBEDDING_3_LARGE = 'openai/text-embedding-3-large',
+  TEXT_EMBEDDING_ADA_002 = 'openai/text-embedding-ada-002',
 }
 
 export enum FaixaTemperatura {
@@ -136,12 +136,12 @@ export enum FaixaTemperatura {
 // Configuração Types
 export interface Configuracao {
   id: number;
-  tipoConfiguracao: TipoConfiguracao;
+  tipoConfiguracao: string; // Nome do enum como string no backend
   chave: string;
   valor: string;
   descricao?: string;
   ehSensivel: boolean;
-  status: StatusConfiguracao;
+  status: string; // Status como string no backend
   criadoEm: string;
   atualizadoEm: string;
 }
@@ -150,7 +150,7 @@ export enum TipoConfiguracao {
   // API Keys
   OPENROUTER_API_KEY = 'OPENROUTER_API_KEY',
 
-  // Modelos e Embeddings
+  // Modelos
   EMBEDDING_MODEL = 'EMBEDDING_MODEL',
   EMBEDDING_DIMENSION = 'EMBEDDING_DIMENSION',
   LLM_MODEL_PADRAO = 'LLM_MODEL_PADRAO',
@@ -165,7 +165,11 @@ export enum TipoConfiguracao {
   TOP_P = 'TOP_P',
   TOP_K = 'TOP_K',
 
-  // Timeout e Performance
+  // Budget/Custo
+  CUSTO_MAXIMO_CONVERSA = 'CUSTO_MAXIMO_CONVERSA',
+  CUSTO_MAXIMO_USUARIO = 'CUSTO_MAXIMO_USUARIO',
+
+  // Timeout/Performance
   TIMEOUT_SEGUNDOS = 'TIMEOUT_SEGUNDOS',
   CHUNK_SIZE = 'CHUNK_SIZE',
   CHUNK_OVERLAP = 'CHUNK_OVERLAP',
@@ -173,10 +177,6 @@ export enum TipoConfiguracao {
   // Vector Search
   VECTOR_SEARCH_LIMIT = 'VECTOR_SEARCH_LIMIT',
   VECTOR_SEARCH_MIN_SIMILARITY = 'VECTOR_SEARCH_MIN_SIMILARITY',
-
-  // Budget/Custo
-  CUSTO_MAXIMO_CONVERSA = 'CUSTO_MAXIMO_CONVERSA',
-  CUSTO_MAXIMO_USUARIO = 'CUSTO_MAXIMO_USUARIO',
 
   // Logging e Debug
   LOG_LEVEL_RAG = 'LOG_LEVEL_RAG',

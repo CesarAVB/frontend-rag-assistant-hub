@@ -16,7 +16,9 @@ import { MainLayout } from '@/components/layout/MainLayout';
 import { PageLoader } from '@/components/shared/LoadingSpinner';
 import { useToastContext } from '@/hooks/useToast';
 import { assistenteService } from '@/services/assistenteService';
+import { configuracaoService } from '@/services/configuracaoService';
 import type { CreateAssistenteDTO, UpdateAssistenteDTO } from '@/types';
+import { StatusConfiguracao } from '@/types';
 
 const assistenteSchema = z.object({
   nome: z.string().min(3, 'Nome deve ter pelo menos 3 caracteres'),
@@ -29,20 +31,21 @@ const assistenteSchema = z.object({
 
 type AssistenteFormData = z.infer<typeof assistenteSchema>;
 
-const modelos = [
-  { value: 'mistral-7b-instruct', label: 'Mistral 7B Instruct' },
-  { value: 'llama-2-7b', label: 'LLaMA 2 7B' },
-  { value: 'codellama-7b', label: 'CodeLlama 7B' },
-  { value: 'phi-2', label: 'Phi-2' },
-];
+// Removido do topo. Será movido para dentro do componente.
 
 export function AssistenteFormPage() {
   const navigate = useNavigate();
   const { id } = useParams();
   const queryClient = useQueryClient();
   const { success, error } = useToastContext();
-  
+
   const isEditing = Boolean(id);
+
+  // Buscar modelos disponíveis
+  const { data: modelos = [], isLoading: isLoadingModelos } = useQuery({
+    queryKey: ['modelos'],
+    queryFn: () => configuracaoService.listarModelos(),
+  });
 
   const { data: assistente, isLoading } = useQuery({
     queryKey: ['assistente', id],
@@ -111,7 +114,7 @@ export function AssistenteFormPage() {
     };
     
     if (isEditing) {
-      updateMutation.mutate({ ...payload, status: data.status });
+      updateMutation.mutate({ ...payload, status: data.status as StatusConfiguracao });
     } else {
       createMutation.mutate(payload);
     }
@@ -120,10 +123,10 @@ export function AssistenteFormPage() {
   const modeloPadrao = watch('modeloPadrao');
   const status = watch('status');
 
-  if (isEditing && isLoading) {
+  if ((isEditing && isLoading) || isLoadingModelos) {
     return (
       <MainLayout>
-        <PageLoader message="Carregando assistente..." />
+        <PageLoader message={isLoadingModelos ? "Carregando modelos..." : "Carregando assistente..."} />
       </MainLayout>
     );
   }
@@ -237,7 +240,7 @@ export function AssistenteFormPage() {
                   </div>
                   <Switch
                     checked={status === 'ATIVO'}
-                    onCheckedChange={(checked) => setValue('status', checked ? 'ATIVO' : 'INATIVO')}
+                    onCheckedChange={(checked) => setValue('status', checked ? StatusConfiguracao.ATIVO : StatusConfiguracao.INATIVO)}
                   />
                 </div>
               )}
